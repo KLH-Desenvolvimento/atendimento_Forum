@@ -1,0 +1,1 @@
+10.0.0.130/12345/telas/telas-04.html  => fablab.chamador.server
