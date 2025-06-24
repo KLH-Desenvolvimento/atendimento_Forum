@@ -13,6 +13,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (path.includes("Tela-04")) configurarTela04();
     if (path.includes("Tela-05")) configurarTela05();
     if (path.includes("Tela-06")) await configurarTela06();
+    if (path.includes("Tela-07")) configurarTela07();
   } catch (e) {
     console.error("Erro na inicialização:", e);
     showError("Erro ao carregar a aplicação. Recarregue a página.");
@@ -215,7 +216,14 @@ async function configurarTela06() {
   document.getElementById("hora").textContent = horaAtual();
 
 }
+async function configurarTela07() {
+  // Preenche os dados na tela com fallback para sessionStorage
+  document.getElementById("nomeT2").textContent = sessionStorage.getItem("nome") || "Não informado";
+  document.getElementById("cpfT2").textContent = sessionStorage.getItem("cpf") || "Não informado";
+  document.getElementById("idDoSpan").textContent = sessionStorage.getItem("currentOperation") || "Não informado";
+  
 
+}
 async function enviarRegistro() {
   /*retorna para evitar recurção */
 
