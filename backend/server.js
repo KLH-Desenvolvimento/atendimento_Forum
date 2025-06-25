@@ -76,6 +76,36 @@ app.post('/api/registros', (req, res) => {
   );
 });
 
+app.get('/api/registros', (req, res) => {
+  // Para GET requests, normalmente usamos query parameters em vez de body
+  const { horaSessao } = req.query;
+
+  if (!horaSessao) {
+    return res.status(400).json({ error: 'Parâmetro horaSessao é obrigatório' });
+  }
+
+  db.all(
+    `SELECT nome, cpf, intimacao, horaSessao 
+     FROM registros
+     WHERE horaSessao = ?`,
+    [horaSessao],
+    function(err, rows) {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+      
+      if (rows.length === 0) {
+        return res.status(404).json({ message: 'Nenhum registro encontrado' });
+      }
+
+      res.status(200).json({
+        data: rows,
+        message: 'Registros obtidos com sucesso!'
+      });
+    }
+  );
+});
+
 // Rota de teste
 app.get('/api/test', (req, res) => {
   res.json({ message: 'API funcionando!' });

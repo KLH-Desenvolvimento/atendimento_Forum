@@ -1,0 +1,148 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-buton: #2d308e;
+    --central-color: #f0f0f0;
+    --central-senha: #fafafa;
+    --forum-color: #2226a8;
+    --text-color: #d9d9d9;
+    --text-p-h2: #FFFFFF;
+    --text-h1: #000000;
+    --paragrafo: #004aad;
+}
+
+html, body {
+    background-color: var(--central-color);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+    padding: 30px 4%;
+    background-color: var(--paragrafo);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+header i {
+    font-size: 60px;
+    color: var(--text-p-h2);
+}
+
+header h1 {
+    font-size: 34px;
+    color: var(--text-p-h2);
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5vh auto;
+}
+
+.controle-posicao {
+    position: relative;
+}
+
+/* ===== Tabela ===== */
+
+.fila-atendimento table {
+    width: 90%;
+    border-collapse: collapse;
+    align-items: center;
+    text-align: center;
+    margin-left: 75px;
+    box-shadow: 2px 2px 10px;
+    table-layout: fixed; 
+}
+
+.fila-atendimento th,
+.fila-atendimento td {
+    width: 200px;            
+    height: 50px;           
+    padding: 10px;
+    border: 3px solid var(--forum-color);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.fila-atendimento th {
+    background-color: var(--forum-color);
+    color: white;
+    font-weight: bold;
+}
+
+.fila-atendimento tr {
+    border: 3px solid var(--color-buton);
+}
+
+/* largura específica por coluna: */
+.fila-atendimento th:nth-child(1),
+.fila-atendimento td:nth-child(1) {
+    width: 300px; /* Nome */
+}
+
+.fila-atendimento th:nth-child(2),
+.fila-atendimento td:nth-child(2) {
+    width: 200px; /* Composição */
+}
+
+.fila-atendimento th:nth-child(3),
+.fila-atendimento td:nth-child(3) {
+    width: 180px; /* CPF */
+}
+
+/* ===== Botões ===== */
+.btn {
+    display: flex;
+    margin-top: 50px;
+    margin-left: 90px;
+}
+
+.btn_fila {
+    font-size: 15px;
+    font-weight: bold;
+    background-color: var(--color-buton);
+    color: var(--text-p-h2);
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn_fila:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+/* ===== Footer ===== */
+footer {
+    background-color: var(--paragrafo);
+    padding: 10px 4%;
+    text-align: end;
+    width: 100%;
+}
+
+.fablab1,
+.fablab2 {
+    display: inline-block;
+    height: 65px;
+    margin-top: 10px;
+}
+
+.fablab2 {
+    margin-left: 30px;
+}
+

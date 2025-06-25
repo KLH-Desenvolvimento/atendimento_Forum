@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (path.includes("Tela-04")) configurarTela04();
     if (path.includes("Tela-05")) configurarTela05();
     if (path.includes("Tela-06")) await configurarTela06();
-    if (path.includes("Tela-07")) configurarTela07();
+    if (path.includes("Tela-07")) await configurarTela07();
   } catch (e) {
     console.error("Erro na inicialização:", e);
     showError("Erro ao carregar a aplicação. Recarregue a página.");
@@ -215,18 +215,41 @@ async function configurarTela06() {
   document.getElementById("data").textContent = dataAtual();
   document.getElementById("hora").textContent = horaAtual();
 
+  // Quando a página carregar, chame a configuração
+  document.addEventListener('DOMContentLoaded', function() {
+    configurarTela07();
+  });
+  
 }
 async function configurarTela07() {
+   try {
+    const response = await fetch(`${API_BASE_URL}/registros`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registro)
+    });
+    console.log(response);
+    if (!response.ok) throw new Error('Erro ao registrar');
+    
+    const data = await response.json();
+    console.log('Sucesso:', data);
+
+  } catch (error) {
+    console.error("Erro:", error);
+    showError("Falha ao enviar: " + error.message);
+  }
   // Preenche os dados na tela com fallback para sessionStorage
-  document.getElementById("nomeT2").textContent = sessionStorage.getItem("nome") || "Não informado";
-  document.getElementById("cpfT2").textContent = sessionStorage.getItem("cpf") || "Não informado";
-  document.getElementById("idDoSpan").textContent = sessionStorage.getItem("currentOperation") || "Não informado";
+  document.getElementById("nome1").textContent = nome;
+  document.getElementById("intima1").textContent = intimacao;
+  document.getElementById("cpf1").textContent = cpf;
+  console.log(nome, cpf, intimacao);
   
 
 }
 async function enviarRegistro() {
   /*retorna para evitar recurção */
 
+  
 
   const registro = {
     nome: sessionStorage.getItem("nome") || "Não informado",
@@ -237,6 +260,8 @@ async function enviarRegistro() {
     data: dataAtual(),
     hora: horaAtual()
   };
+
+  configurarTela07(registro.nome, registro.cpf, registro.intimacao);
 
   console.log(registro)
 
@@ -252,16 +277,21 @@ async function enviarRegistro() {
     const data = await response.json();
     console.log('Sucesso:', data);
     
-    /* */
+    /* 
 
     sessionStorage.clear();
-    window.location.href = "../index.html";
+    window.location.href = "../index.html";*/
 
   } catch (error) {
     console.error("Erro:", error);
     showError("Falha ao enviar: " + error.message);
   }
 
+}
+
+/*printa o valor na tela de controle*/
+async function repassa(registro){
+  
 }
 
 /* Finalização com som */
