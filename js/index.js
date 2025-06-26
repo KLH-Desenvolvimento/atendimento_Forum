@@ -13,7 +13,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (path.includes("Tela-04")) configurarTela04();
     if (path.includes("Tela-05")) configurarTela05();
     if (path.includes("Tela-06")) await configurarTela06();
-    if (path.includes("tela-07")) await configurarTela07();
+    if (path.includes("tela-07")) configurarTela07();
+    if (path.includes("tela-08")) configurarTela08();
   } catch (e) {
     console.error("Erro na inicialização:", e);
     showError("Erro ao carregar a aplicação. Recarregue a página.");
@@ -245,11 +246,15 @@ async function configurarTela07() {
       document.getElementById(`cpf${i+1}`).textContent = registro.cpf || "Não informado";
       document.getElementById(`sessao${i+1}`).textContent = registro.horaSessao || "Não informado";
     }
-    
+    // Configura o botão de enviar
+  const enviarBtn = document.getElementById("btn_fila");
+  if (enviarBtn) {
+    enviarBtn.addEventListener("click", pegarDB());
+  }
     return true;
 
   } catch (error) {
-    console.error("Erro ao carregar Tela-07:", error);
+    console.error("Erro ao carregar Tela-08:", error);
     showError(error.message);
     
     // Fallback: mostra valores de erro em todas as linhas
@@ -262,6 +267,62 @@ async function configurarTela07() {
     
     return false;
   }
+
+  
+}
+
+async function configurarTela08(){
+  // Preenche as linhas da tabela
+    for (let i = 0; i < 6; i++) {
+      
+      document.getElementById(`Nome${i+1}`).textContent = "";
+      document.getElementById(`Intima${i+1}`).textContent = "";
+      document.getElementById(`Cpf${i+1}`).textContent = "";
+      document.getElementById(`Sessao${i+1}`).textContent = "";
+    }
+    await pegarDB();
+  
+}
+
+async function pegarDB() {
+  try {
+    
+    
+
+    // Faz a requisição para a API buscar os últimos 6 registros
+    const response = await fetch(`${API_BASE_URL}/ultimos-registros`);
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erro ao buscar registros');
+    }
+    
+    const result = await response.json();
+    
+    // Verifica se há registros retornados
+    if (!result.data || result.data.length === 0) {
+      throw new Error('Nenhum registro encontrado no sistema');
+    }
+    
+    // Preenche as linhas da tabela
+    for (let i = 0; i < 6; i++) {
+      const registro = result.data[i] || {};
+      
+      document.getElementById(`Nome${i+1}`).textContent = registro.nome || "Não informado";
+      document.getElementById(`Intima${i+1}`).textContent = registro.intimacao || "Não informado";
+      document.getElementById(`Cpf${i+1}`).textContent = registro.cpf || "Não informado";
+      document.getElementById(`Sessao${i+1}`).textContent = registro.horaSessao || "Não informado";
+    }
+    
+    return true;
+
+  } catch (error) {
+    console.error("Erro ao carregar Tela-07:", error);
+    showError(error.message);
+
+    }
+    
+    return false;
 }
 
 async function enviarRegistro() {

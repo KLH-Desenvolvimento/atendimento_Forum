@@ -81,7 +81,7 @@ app.get('/api/ultimos-registros', (req, res) => {
     `SELECT nome, cpf, intimacao, horaSessao 
      FROM registros 
      ORDER BY id DESC 
-     LIMIT 5`,
+     LIMIT 6`,
     (err, rows) => {
       if (err) {
         return res.status(500).json({ 
