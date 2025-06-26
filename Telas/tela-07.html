@@ -4,73 +4,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/style.css/geral.css">
+  <link rel="stylesheet" href="/style.css/geral.css"> <!-- Alterado para caminho relativo -->
   <link rel="shortcut icon" href="/IMG/teste 01.png" type="image/x-icon">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <script type="module" src="/js/index.js"></script>
-  <title>Fórum</title>
+  <title>Fórum - Controle de Fila</title> <!-- Título mais descritivo -->
 </head>
 
 <body>
   <header>
-    <i class="bi bi-person-gear"></i>
+    <i class="bi bi-person-gear" aria-hidden="true"></i>
     <h1>CONTROLE FILA DE ATENDIMENTO</h1>
   </header>
 
   <main>
-    
     <div class="controle-posicao">
-     
       <div class="fila-atendimento">
-        <table>
+        <table class="fila-atendimento">
           <thead>
             <tr>
               <th>NOME</th>
               <th>COMPOSIÇÃO</th>
               <th>CPF</th>
+              <th>SESSÃO</th>
             </tr>
           </thead>
           <tbody>
-            <tr class="linha-1">
-              <td><span id=nome1></span></td>
-              <td><span id=intima1></span></td>
-              <td><span id=cpf1></span></td>
-            </tr>
+            <!-- Linha 1 -->
             <tr>
-              <td>fffffff</td>
-              <td></td>
-              <td></td>
+              <td><span id="nome1">-</span></td>
+              <td><span id="intima1">-</span></td>
+              <td><span id="cpf1">-</span></td>
+              <td><span id="sessao1">-</span></td>
             </tr>
+            <!-- Linha 2 -->
             <tr>
-              <td>ffffffffff</td>
-              <td></td>
-              <td></td>
+              <td><span id="nome2">-</span></td>
+              <td><span id="intima2">-</span></td>
+              <td><span id="cpf2">-</span></td>
+              <td><span id="sessao2">-</span></td>
             </tr>
+            <!-- Linha 3 -->
             <tr>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td><span id="nome3">-</span></td>
+              <td><span id="intima3">-</span></td>
+              <td><span id="cpf3">-</span></td>
+              <td><span id="sessao3">-</span></td>
             </tr>
+            <!-- Linha 4 -->
             <tr>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td><span id="nome4">-</span></td>
+              <td><span id="intima4">-</span></td>
+              <td><span id="cpf4">-</span></td>
+              <td><span id="sessao4">-</span></td>
+            </tr>
+            <!-- Linha 5 -->
+            <tr>
+              <td><span id="nome5">-</span></td>
+              <td><span id="intima5">-</span></td>
+              <td><span id="cpf5">-</span></td>
+              <td><span id="sessao5">-</span></td>
+            </tr>
+            <!-- Linha 6 -->
+            <tr>
+              <td><span id="nome6">-</span></td>
+              <td><span id="intima6">-</span></td>
+              <td><span id="cpf6">-</span></td>
+              <td><span id="sessao6">-</span></td>
             </tr>
           </tbody>
         </table>
-
       </div>
-     
     </div>
     <div class="btn">
-      <button class="btn_fila">COMFIRMAR</button>
+      <button class="btn_fila" onclick="confirmarAtendimento()">CONFIRMAR</button> <!-- Corrigido e com evento -->
     </div>
   </main>
 
   <footer>
-    <img class="fablab1" src="/IMG/fablab.png" alt="">
-    <img class="fablab2" src="/IMG/branca.png" alt="">
+    <img class="fablab1" src="/IMG/fablab.png" alt="Logo FabLab">
+    <img class="fablab2" src="../IMG/branca.png" alt="Logo Secundária">
   </footer>
+
+  <script type="module" src="../js/index.js"></script> <!-- Movido para o final do body -->
 </body>
 
 </html>

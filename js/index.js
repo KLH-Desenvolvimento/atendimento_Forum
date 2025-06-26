@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (path.includes("Tela-04")) configurarTela04();
     if (path.includes("Tela-05")) configurarTela05();
     if (path.includes("Tela-06")) await configurarTela06();
-    if (path.includes("Tela-07")) await configurarTela07();
+    if (path.includes("tela-07")) await configurarTela07();
   } catch (e) {
     console.error("Erro na inicialização:", e);
     showError("Erro ao carregar a aplicação. Recarregue a página.");
@@ -215,41 +215,56 @@ async function configurarTela06() {
   document.getElementById("data").textContent = dataAtual();
   document.getElementById("hora").textContent = horaAtual();
 
-  // Quando a página carregar, chame a configuração
-  document.addEventListener('DOMContentLoaded', function() {
-    configurarTela07();
-  });
+
   
 }
+
 async function configurarTela07() {
-   try {
-    const response = await fetch(`${API_BASE_URL}/registros`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(registro)
-    });
-    console.log(response);
-    if (!response.ok) throw new Error('Erro ao registrar');
+  try {
+    // Faz a requisição para a API buscar os últimos 6 registros
+    const response = await fetch(`${API_BASE_URL}/ultimos-registros`);
     
-    const data = await response.json();
-    console.log('Sucesso:', data);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Erro ao buscar registros');
+    }
+    
+    const result = await response.json();
+    
+    // Verifica se há registros retornados
+    if (!result.data || result.data.length === 0) {
+      throw new Error('Nenhum registro encontrado no sistema');
+    }
+    
+    // Preenche as linhas da tabela
+    for (let i = 0; i < 6; i++) {
+      const registro = result.data[i] || {};
+      
+      document.getElementById(`nome${i+1}`).textContent = registro.nome || "Não informado";
+      document.getElementById(`intima${i+1}`).textContent = registro.intimacao || "Não informado";
+      document.getElementById(`cpf${i+1}`).textContent = registro.cpf || "Não informado";
+      document.getElementById(`sessao${i+1}`).textContent = registro.horaSessao || "Não informado";
+    }
+    
+    return true;
 
   } catch (error) {
-    console.error("Erro:", error);
-    showError("Falha ao enviar: " + error.message);
+    console.error("Erro ao carregar Tela-07:", error);
+    showError(error.message);
+    
+    // Fallback: mostra valores de erro em todas as linhas
+    for (let i = 1; i <= 6; i++) {
+      document.getElementById(`nome${i}`).textContent = "Erro ao carregar";
+      document.getElementById(`intima${i}`).textContent = "Erro ao carregar";
+      document.getElementById(`cpf${i}`).textContent = "Erro ao carregar";
+      document.getElementById(`sessao${i}`).textContent = "Erro ao carregar";
+    }
+    
+    return false;
   }
-  // Preenche os dados na tela com fallback para sessionStorage
-  document.getElementById("nome1").textContent = nome;
-  document.getElementById("intima1").textContent = intimacao;
-  document.getElementById("cpf1").textContent = cpf;
-  console.log(nome, cpf, intimacao);
-  
-
 }
-async function enviarRegistro() {
-  /*retorna para evitar recurção */
 
-  
+async function enviarRegistro() {
 
   const registro = {
     nome: sessionStorage.getItem("nome") || "Não informado",
@@ -261,9 +276,10 @@ async function enviarRegistro() {
     hora: horaAtual()
   };
 
-  configurarTela07(registro.nome, registro.cpf, registro.intimacao);
+  hora_Sessao = registro.horaSessao;
+  
 
-  console.log(registro)
+  console.log(registro);
 
   try {
     const response = await fetch(`${API_BASE_URL}/registros`, {
@@ -276,23 +292,21 @@ async function enviarRegistro() {
     
     const data = await response.json();
     console.log('Sucesso:', data);
+
     
-    /* 
+    
 
     sessionStorage.clear();
-    window.location.href = "../index.html";*/
+    window.location.href = "../index.html";
 
   } catch (error) {
     console.error("Erro:", error);
     showError("Falha ao enviar: " + error.message);
   }
-
+  await configurarTela07();
 }
 
-/*printa o valor na tela de controle*/
-async function repassa(registro){
-  
-}
+
 
 /* Finalização com som */
 function tocarEAbrir() {

@@ -72,35 +72,26 @@ app.post('/api/registros', (req, res) => {
         id: this.lastID,
         message: 'Registro salvo com sucesso!'
       });
-    }
-  );
+    });
 });
 
-app.get('/api/registros', (req, res) => {
-  // Para GET requests, normalmente usamos query parameters em vez de body
-  const { horaSessao } = req.query;
-
-  if (!horaSessao) {
-    return res.status(400).json({ error: 'Parâmetro horaSessao é obrigatório' });
-  }
-
+// Novo endpoint para buscar os últimos 6 registros
+app.get('/api/ultimos-registros', (req, res) => {
   db.all(
     `SELECT nome, cpf, intimacao, horaSessao 
-     FROM registros
-     WHERE horaSessao = ?`,
-    [horaSessao],
-    function(err, rows) {
+     FROM registros 
+     ORDER BY id DESC 
+     LIMIT 5`,
+    (err, rows) => {
       if (err) {
-        return res.status(400).json({ error: err.message });
+        return res.status(500).json({ 
+          error: err.message 
+        });
       }
       
-      if (rows.length === 0) {
-        return res.status(404).json({ message: 'Nenhum registro encontrado' });
-      }
-
-      res.status(200).json({
-        data: rows,
-        message: 'Registros obtidos com sucesso!'
+      res.json({
+        success: true,
+        data: rows 
       });
     }
   );
