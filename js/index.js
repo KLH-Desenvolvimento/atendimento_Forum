@@ -241,16 +241,12 @@ async function configurarTela07() {
     for (let i = 0; i < 6; i++) {
       const registro = result.data[i] || {};
       
-      document.getElementById(`nome${i+1}`).textContent = registro.nome || "Não informado";
-      document.getElementById(`intima${i+1}`).textContent = registro.intimacao || "Não informado";
-      document.getElementById(`cpf${i+1}`).textContent = registro.cpf || "Não informado";
-      document.getElementById(`sessao${i+1}`).textContent = registro.horaSessao || "Não informado";
+      document.getElementById(`nome${i}`).textContent = registro.nome || "Não informado";
+      document.getElementById(`intima${i}`).textContent = registro.intimacao || "Não informado";
+      document.getElementById(`cpf${i}`).textContent = registro.cpf || "Não informado";
+      document.getElementById(`sessao${i}`).textContent = registro.horaSessao || "Não informado";
     }
-    // Configura o botão de enviar
-  const enviarBtn = document.getElementById("btn_fila");
-  if (enviarBtn) {
-    enviarBtn.addEventListener("click", pegarDB());
-  }
+  
     return true;
 
   } catch (error) {

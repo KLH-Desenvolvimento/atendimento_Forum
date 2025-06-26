@@ -63,7 +63,7 @@ header p {
 
 
 
-.fila-atendimento table {
+.fila-chamada table {
     width: 90%;
     border-collapse: collapse;
     align-items: center;
@@ -74,8 +74,8 @@ header p {
     table-layout: fixed; 
 }
 
-.fila-atendimento th,
-.fila-atendimento td {
+.fila-chamada th,
+.fila-chamada td {
     width: 200px;            
     height: 50px;           
     padding: 10px;
@@ -85,29 +85,29 @@ header p {
     text-overflow: ellipsis;
 }
 
-.fila-atendimento th {
+.fila-chamada th {
     background-color: var(--forum-color);
     color: white;
     font-weight: bold;
 }
 
-.fila-atendimento tr {
+.fila-chamada tr {
     border: 3px solid var(--color-buton);
 }
 
 /* largura específica por coluna: */
-.fila-atendimento th:nth-child(1),
-.fila-atendimento td:nth-child(1) {
+.fila-chamada th:nth-child(1),
+.fila-chamada td:nth-child(1) {
     width: 300px; /* Nome */
 }
 
-.fila-atendimento th:nth-child(2),
-.fila-atendimento td:nth-child(2) {
+.fila-chamada th:nth-child(2),
+.fila-chamada td:nth-child(2) {
     width: 200px; /* Composição */
 }
 
-.fila-atendimento th:nth-child(3),
-.fila-atendimento td:nth-child(3) {
+.fila-chamada th:nth-child(3),
+.fila-chamada td:nth-child(3) {
     width: 180px; /* CPF */
 }
 
