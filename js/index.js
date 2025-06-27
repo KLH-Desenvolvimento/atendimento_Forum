@@ -12,7 +12,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (path.includes("Tela-03")) configurarTela03();
     if (path.includes("Tela-04")) configurarTela04();
     if (path.includes("Tela-05")) configurarTela05();
-    if (path.includes("Tela-06")) await configurarTela06();
+    if (path.includes("Tela-06")) configurarTela06();
     if (path.includes("tela-07")) configurarTela07();
     if (path.includes("tela-08")) configurarTela08();
   } catch (e) {
@@ -219,7 +219,7 @@ async function configurarTela06() {
 
   
 }
-
+let chamada = false;
 async function configurarTela07() {
   try {
     // Faz a requisição para a API buscar os últimos 6 registros
@@ -246,8 +246,15 @@ async function configurarTela07() {
       document.getElementById(`cpf${i}`).textContent = registro.cpf || "Não informado";
       document.getElementById(`sessao${i}`).textContent = registro.horaSessao || "Não informado";
     }
-  
-    return true;
+    // Seleciona o botão pelo ID
+    const botao = document.getElementById("btn_fila");
+    console.log(botao);
+
+    // Adiciona um ouvinte de evento para o clique
+    botao.addEventListener("click", function(e) {
+      e.preventDefault(); // Evita o submit
+      criarChamada();
+    });
 
   } catch (error) {
     console.error("Erro ao carregar Tela-08:", error);
@@ -260,34 +267,15 @@ async function configurarTela07() {
       document.getElementById(`cpf${i}`).textContent = "Erro ao carregar";
       document.getElementById(`sessao${i}`).textContent = "Erro ao carregar";
     }
-    
     return false;
   }
-
-  
 }
 
-async function configurarTela08(){
-  // Preenche as linhas da tabela
-    for (let i = 0; i < 6; i++) {
-      
-      document.getElementById(`Nome${i+1}`).textContent = "";
-      document.getElementById(`Intima${i+1}`).textContent = "";
-      document.getElementById(`Cpf${i+1}`).textContent = "";
-      document.getElementById(`Sessao${i+1}`).textContent = "";
-    }
-    await pegarDB();
+async function configurarTela08() {
   
-}
 
-async function pegarDB() {
   try {
-    
-    
-
-    // Faz a requisição para a API buscar os últimos 6 registros
-    const response = await fetch(`${API_BASE_URL}/ultimos-registros`);
-    
+    const response = await fetch(`${API_BASE_URL}/pegarChamada`);
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.message || 'Erro ao buscar registros');
@@ -295,7 +283,6 @@ async function pegarDB() {
     
     const result = await response.json();
     
-    // Verifica se há registros retornados
     if (!result.data || result.data.length === 0) {
       throw new Error('Nenhum registro encontrado no sistema');
     }
@@ -309,20 +296,44 @@ async function pegarDB() {
       document.getElementById(`Cpf${i+1}`).textContent = registro.cpf || "Não informado";
       document.getElementById(`Sessao${i+1}`).textContent = registro.horaSessao || "Não informado";
     }
-    
-    return true;
-
   } catch (error) {
-    console.error("Erro ao carregar Tela-07:", error);
+    console.error("Erro ao carregar Tela-08:", error);
     showError(error.message);
+  }
+}
 
+async function criarChamada() {
+  for(let i = 0; i < 6; i++){
+    const registro = {
+      nome: document.getElementById(`nome${i}`).textContent,
+      cpf: document.getElementById(`cpf${i}`).textContent,
+      intimacao: document.getElementById(`intima${i}`).textContent,
+      horaSessao: document.getElementById(`sessao${i}`).textContent
+    };
+    console.log(registro);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/registrarChamada`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(registro)
+      });
+      console.log(response);
+      if (!response.ok) throw new Error('Erro ao registrar');
+      
+      const data = await response.json();
+      console.log('Sucesso:', data);
+      configurarTela08();
+
+    } catch (error) {
+      console.error("Erro:", error);
+      showError("Falha ao enviar: " + error.message);
     }
-    
-    return false;
+  }
+
 }
 
 async function enviarRegistro() {
-
   const registro = {
     nome: sessionStorage.getItem("nome") || "Não informado",
     cpf: sessionStorage.getItem("cpf") || "Não informado",
@@ -354,7 +365,7 @@ async function enviarRegistro() {
     
 
     sessionStorage.clear();
-    window.location.href = "../index.html";
+    window.location.href = "../Telas/Tela-03.html";
 
   } catch (error) {
     console.error("Erro:", error);
