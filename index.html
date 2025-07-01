@@ -7,7 +7,6 @@
   <script src="/sqljs-all/sql-wasm.js"></script>
   <link rel="stylesheet" href="./style.css/index.css">
   <link rel="shortcut icon" href="./IMG/teste 01.png" type="image/x-icon">
-  <script type="module" src="/js/index.js"></script>
 
   <title>Primeira-Tela</title>
 </head>
@@ -28,20 +27,24 @@
     <div class="main_padrao">
       <h1>QUAL É SUA OPERAÇÃO</h1>
       <div class="btn_primeira_tela">
-        <button id="tipo-1" class="btn_primeiro" onclick="operação(this)">NORMAL</button>
+        <button id="tipo-1" class="btn_primeiro" onclick="operacao(this)">NORMAL</button>
 
-        <button id="tipo-2" class="btn_primeiro" onclick="operação(this)">PREFERÊNCIAL</button>
+        <button id="tipo-2" class="btn_primeiro" onclick="operacao(this)">PREFERÊNCIAL</button>
 
         <button class="btn_primeiro" onclick="window.location.href='./Telas/Tele-02.html'">DÚVIDAS</button>
 
+        <script>
+          function operacao(botao) {
+            sessionStorage.setItem('currentOperation', botao.textContent);
+            window.location.href = "../../Telas/Tela-03.html";
+          }
+        </script>
 
       </div>
-
     </div>
-
   </main>
-
-  <script src="./js/index.js"></script>
+  <script src="./js/scripts/config.js" type="module"></script>
+  <script src="./js/scripts/tela01.js" type="module"></script>
+  <script src="./js/scripts/main.js" type="module"></script>
 </body>
-
 </html>

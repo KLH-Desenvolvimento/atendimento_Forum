@@ -1,18 +1,11 @@
-// Configurações globais
-const API_BASE_URL = 'http://localhost:3001/api'; // Altere para sua URL de produção
-
-// Estado global da aplicação
-const appState = {
-  usuario: null,
-  convocacoes: [],
-  currentOperation: null
-};
+/*configurações globais */
+/*chamada da rota api */
+export const API_BASE_URL = 'http://localhost:3001/api';
+import { configurarTela07 } from "./tela07";
 
 // Inicialização da aplicação
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    // Restaura estado da sessão
-    await restoreSessionState();
     
     // Configura telas
     const path = window.location.pathname;
@@ -20,7 +13,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (path.includes("Tela-03")) configurarTela03();
     if (path.includes("Tela-04")) configurarTela04();
     if (path.includes("Tela-05")) configurarTela05();
-    if (path.includes("Tela-06")) await configurarTela06();
+    if (path.includes("Tela-06")) configurarTela06();
   } catch (e) {
     console.error("Erro na inicialização:", e);
     showError("Erro ao carregar a aplicação. Recarregue a página.");
@@ -28,9 +21,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 /* ========== FUNÇÕES UTILITÁRIAS ========== */
-
 // Função para chamadas à API
-async function fetchAPI(endpoint, method = 'GET', data = null) {
+export async function fetchAPI(endpoint, method = 'GET', data = null) {
   const options = {
     method,
     headers: {
@@ -55,6 +47,7 @@ async function fetchAPI(endpoint, method = 'GET', data = null) {
   }
 }
 
+/*funções para data e hora */
 function dataAtual() {
   const data = new Date();
   return `${String(data.getDate()).padStart(2, '0')}/${String(data.getMonth() + 1).padStart(2, '0')}/${data.getFullYear()}`;
@@ -65,6 +58,8 @@ function horaAtual() {
   return `${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
 }
 
+
+/*Caixa de erro personalizada */
 function showError(message) {
   const errorElement = document.getElementById('error-message') || createErrorMessageElement();
   errorElement.textContent = message;
@@ -72,6 +67,7 @@ function showError(message) {
   setTimeout(() => errorElement.style.display = 'none', 5000);
 }
 
+/*cria uma mensagem de erro */
 function createErrorMessageElement() {
   const div = document.createElement('div');
   div.id = 'error-message';
@@ -80,12 +76,7 @@ function createErrorMessageElement() {
   return div;
 }
 
-async function restoreSessionState() {
-  const savedUser = sessionStorage.getItem('usuario');
-  if (savedUser) {
-    appState.usuario = JSON.parse(savedUser);
-  }
-}
+
 
 /* ========== CONFIGURAÇÃO DAS TELAS ========== */
 
@@ -95,7 +86,7 @@ function configurarTela01() {
 }
 
 function operação(botao) {
-  appState.currentOperation = botao.textContent;
+
   sessionStorage.setItem('currentOperation', botao.textContent);
   window.location.href = "./Telas/Tela-03.html";
 }
@@ -116,12 +107,9 @@ function configurarTela03() {
       if (!nome || !cpf) {
         throw new Error("Nome e CPF são obrigatórios");
       }
-
-      // Verifica se usuário já existe
       
-      // Atualiza estado
-      appState.usuario = { nome, cpf };
-      sessionStorage.setItem('usuario', JSON.stringify(appState.usuario));
+      sessionStorage.setItem('nome', nome);
+      sessionStorage.setItem('cpf', cpf);
       
       window.location.href = "./Tela-04.html"; 
     } catch (error) {
@@ -137,32 +125,53 @@ function configurarTela04() {
 
 function texto_lado(idDoSpan) {
   const valor = document.getElementById(idDoSpan)?.textContent || "";
-  appState.selectedOption = valor;
-  sessionStorage.setItem('selectedOption', valor);
+  sessionStorage.setItem('servico', valor); // Armazena com a chave correta
   window.location.href = "./Tela-05.html";
+  
 }
 
-/* Tela 05 */
+/* Tela 05*/
 function configurarTela05() {
-  const botoes = document.querySelectorAll(".btn-acionar");
-  botoes.forEach(btn => btn.addEventListener("click", Acionar));
+  
+  // Configura os botões de horário
+  const botoesHorario = document.querySelectorAll(".btn_horario");
+  botoesHorario.forEach(btn => btn.addEventListener("click", selecionarHorario));
 
+  // Configura os checkboxes de intimação (popup)
   const checkboxList = document.querySelectorAll('.caixa');
   checkboxList.forEach(cb => {
     cb.addEventListener('change', () => limitarCheckbox(cb));
   });
 
+  // Configura o botão de enviar
   const enviarBtn = document.getElementById("btn-enviar");
   if (enviarBtn) {
     enviarBtn.addEventListener("click", capturarInformacoes);
   }
+
+
 }
 
-let textoCapturado = "";
+// Variáveis para armazenar as seleções
+let horarioSelecionado = "";
+let textoIntimacao = "";
 
-function Acionar(event) {
-  const texto = event.target.previousElementSibling?.innerText || "";
-  textoCapturado = texto;
+function selecionarHorario(event) {
+  // Remove a seleção anterior (visual)
+  document.querySelectorAll('.linha_horario').forEach(el => {
+    el.classList.remove('selecionado');
+  });
+
+  // Adiciona classe de seleção visual
+  event.target.closest('.linha_horario').classList.add('selecionado');
+
+  // Captura o texto completo do horário
+  const textoCompleto = event.target.previousElementSibling?.innerText || "";
+  
+  // Extrai apenas o horário (última parte após o '-')
+  horarioSelecionado = textoCompleto.split('-').pop().trim();
+  
+  // Ativa o popup/dropdown (se necessário)
   document.getElementById('Drop-ddow')?.classList.add('active');
 }
 
@@ -171,28 +180,24 @@ function limitarCheckbox(clicado) {
   checkboxes.forEach(cb => {
     if (cb !== clicado) cb.checked = false;
   });
+  
+  // Captura o texto da intimação selecionada
+  if (clicado.checked) {
+    textoIntimacao = clicado.previousElementSibling?.innerText || "";
+  } else {
+    textoIntimacao = "";
+  }
 }
 
 async function capturarInformacoes() {
   try {
-    const selecionados = [];
-    document.querySelectorAll('.caixa').forEach(checkbox => {
-      if (checkbox.checked) {
-        const texto = checkbox.previousElementSibling?.innerText || "";
-        selecionados.push(texto);
-      }
-    });
+    if (!horarioSelecionado) throw new Error("Selecione um horário");
+    if (!textoIntimacao) throw new Error("Selecione pelo menos uma intimação");
 
-    if (selecionados.length === 0) {
-      throw new Error("Selecione pelo menos uma opção");
-    }
+    // Armazena tudo no sessionStorage com chaves consistentes
+    sessionStorage.setItem('horario', horarioSelecionado);
+    sessionStorage.setItem('intimacao', textoIntimacao);
 
-    appState.convocacoes = selecionados;
-    appState.textoSelecionado = textoCapturado;
-    
-    sessionStorage.setItem('convocacoes', JSON.stringify(selecionados));
-    sessionStorage.setItem('textoSelecionado', textoCapturado);
-    
     window.location.href = "./Tela-06.html";
   } catch (error) {
     showError(error.message);
@@ -200,82 +205,54 @@ async function capturarInformacoes() {
 }
 
 async function configurarTela06() {
-  const span = document.getElementById("idDoSpan");
-  if (!span) return;
-
-  // Preenche os dados na tela
-  document.getElementById("idDoSpan").textContent = appState.selectedOption || "Não informado";
-  document.getElementById("nome").textContent = appState.usuario?.nome || "Não informado";
-  document.getElementById("cpf").textContent = appState.usuario?.cpf || "Não informado";
-  document.getElementById("tipo-1").textContent = appState.currentOperation || "Não informado";
-  document.getElementById("linha-padrão").textContent = appState.textoSelecionado || "Não informado";
-  document.getElementById("drop").textContent = appState.convocacoes?.join(", ") || "Não informado";
+  // Preenche os dados na tela com fallback para sessionStorage
+  document.getElementById("idDoSpan").textContent = sessionStorage.getItem("servico") || "Não informado";
+  document.getElementById("nome").textContent = sessionStorage.getItem("nome") || "Não informado";
+  document.getElementById("cpf").textContent = sessionStorage.getItem("cpf") || "Não informado";
+  document.getElementById("tipo-1").textContent = sessionStorage.getItem("currentOperation") || "Não informado";
+  document.getElementById("linha-padrão").textContent = sessionStorage.getItem("horario") || "Não informado";
+  document.getElementById("drop").textContent = sessionStorage.getItem("intimacao") || "Não informado";
   document.getElementById("data").textContent = dataAtual();
   document.getElementById("hora").textContent = horaAtual();
 
-  // Adicione um botão de confirmação explícito
-  const confirmarBtn = document.createElement('button');
-  confirmarBtn.textContent = 'Confirmar e Finalizar';
-  confirmarBtn.className = 'btn-confirmar';
-  confirmarBtn.addEventListener('click', async () => {
-    await enviarRegistro();
-  });
-  
-  const container = document.getElementById('container-botoes') || document.body;
-  container.appendChild(confirmarBtn);
+  // Seleciona o botão pelo ID
+      const botao = document.getElementById("btn_gerador");  
+      // Adiciona um ouvinte de evento para o clique
+      botao.addEventListener("click", function(e) {
+        e.preventDefault(); // Evita o submit
+        enviarRegistro();
+      });
 }
 
 async function enviarRegistro() {
   const registro = {
-    nome: appState.usuario?.nome || sessionStorage.getItem("nome") || "Não informado",
-    cpf: appState.usuario?.cpf || sessionStorage.getItem("cpf") || "Não informado",
-    tipo_operacao: appState.currentOperation || sessionStorage.getItem("tipo-1") || "Não informado",
-    opcao_selecionada: appState.selectedOption || sessionStorage.getItem("idDoSpan") || "Não informado",
-    texto_adicional: appState.textoSelecionado || sessionStorage.getItem("texto") || "Não informado",
-    convocacoes: appState.convocacoes?.join(", ") || sessionStorage.getItem("convocacoesSelecionadas") || "Não informado"
+    nome: sessionStorage.getItem("nome") || "Não informado",
+    cpf: sessionStorage.getItem("cpf") || "Não informado",
+    servico: sessionStorage.getItem("servico") || "Não informado",
+    intimacao: sessionStorage.getItem("intimacao") || "Não informado",
+    horaSessao: sessionStorage.getItem("horario") || "Não informado",
+    data: dataAtual(),
+    hora: horaAtual()
   };
-
   try {
     const response = await fetch(`${API_BASE_URL}/registros`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(registro)
     });
-
+    console.log(response);
+    if (!response.ok) throw new Error('Erro ao registrar');
+    
     const data = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(data.error || 'Erro ao registrar entrada');
-    }
+    console.log('Sucesso:', data);
 
-    console.log('Registro salvo com sucesso:', data);
     sessionStorage.clear();
-    appState.usuario = null;
-    appState.convocacoes = [];
-    appState.currentOperation = null;
-    
-    // Agora sim chama a função para tocar e redirecionar
-    tocarEAbrir();
-    
+    window.location.href = "../Telas/Tela-03.html";
+
   } catch (error) {
     console.error("Erro:", error);
-    alert("Erro ao registrar: " + error.message);
+    showError("Falha ao enviar: " + error.message);
   }
+  await configurarTela07();
 }
 
-/* Finalização com som */
-function tocarEAbrir() {
-  const audio = document.getElementById("audioClique");
-  if (audio) {
-    audio.play();
-    audio.onended = () => {
-      sessionStorage.clear();
-      window.location.href = "../index.html";
-    };
-  } else {
-    sessionStorage.clear();
-    window.location.href = "../index.html";
-  }
-}
