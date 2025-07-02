@@ -1,31 +1,55 @@
-import { fetchAPI, showError } from './config.js';
-
-// Variável para armazenar os registros
-let ultimosRegistros = [];
+import { chamadaService } from './service.js';
 
 export async function configurarTela07() {
-  try {
-    // Carrega os últimos registros
-    await chamarRegistro();
-    
-    // Configura o botão de chamada
-    const botao = document.getElementById("btn_fila");
-    if (botao) {
-      botao.addEventListener("click", handleChamada);
-    }
-
-  } catch (error) {
-    console.error("Erro na configuração da Tela 07:", error);
-    mostrarErroNasLinhas(error.message);
+  const botaoConfirmar = document.querySelector(".btn_fila");
+  if (botaoConfirmar) {
+    botaoConfirmar.addEventListener("click", async () => {
+      const hora = document.querySelector(".selecionar-interno").value;
+      chamadaService.setHora(hora); // Armazena a hora
+      const dados = await chamadaService.carregarChamadas(); // Busca dados
+      preencherTabela(dados); // Exibe na Tela07
+    });
   }
+
+  const botaoChamar = document.getElementById("chamar");
+  if (botaoChamar) {
+    botaoChamar.addEventListener("click", () => {
+      if (!chamadaService.horaChamada) {
+        alert("Selecione um horário primeiro!");
+        return;
+      }
+      chamadaService.notificarTela08(); // Dispara a Tela08
+    });
+  }
+}
+
+async function pegarDB() {
+  const select = document.querySelector(".selecionar-interno");
+  const horaSelecionada = select.value;
+  chamadaService.setHora(horaSelecionada); // Dispara evento para a Tela08
+}
+
+async function handleChamada(event) {
+  event.preventDefault();
+  const hora = chamadaService.horaChamada;
+  if (!hora) {
+    showError('Nenhum horário selecionado');
+    return;
+  }
+  await chamadaService.carregarChamadas(); // Atualiza a Tela08 via BroadcastChannel
 }
 
 async function chamarRegistro() {
   try {
     const hora = sessionStorage.getItem("horaChamada");
-    console.log(hora);
+    console.log("Hora da sessão:", hora);
+    
+    if (!hora) {
+      throw new Error('Nenhum horário selecionado');
+    }
+    
     const response = await fetchAPI('chamada', 'POST', { horaSessao: hora });
-    console.log(response);
+    console.log("Resposta da API:", response);
     
     if (!response) {
       throw new Error('Dados inválidos recebidos da API');
@@ -45,30 +69,14 @@ function preencherTabela(registros) {
   for (let i = 0; i < 6; i++) {
     const registro = registros[i] || {};
     
-    document.getElementById(`nome${i}`).textContent = registro.nome || "Não informado";
-    document.getElementById(`intima${i}`).textContent = registro.intimacao || "Não informado";
-    document.getElementById(`cpf${i}`).textContent = registro.cpf || "Não informado";
-    document.getElementById(`sessao${i}`).textContent = registro.horaSessao || "Não informado";
+    document.getElementById(`nome${i}`).textContent = registro.nome || "-";
+    document.getElementById(`intima${i}`).textContent = registro.intimacao || "-";
+    document.getElementById(`cpf${i}`).textContent = registro.cpf || "-";
+    document.getElementById(`sessao${i}`).textContent = registro.horaSessao || "-";
   }
 }
 
-async function handleChamada(event) {
-  event.preventDefault();
-  
-  try {
- 
-    
-    // Marca que a tela08 precisa atualizar
-    sessionStorage.setItem('atualizarChamadas', sessionStorage.getItem("horaSessao"));
-
-    
-  } catch (error) {
-    console.error("Erro ao processar chamada:", error);
-    showError("Falha ao criar chamada: " + error.message);
-  }
-}
-
-async function criarChamada() {
+/*async function criarChamada() {
   const chamadas = [];
   
   for (let i = 0; i < 6; i++) {
@@ -101,4 +109,4 @@ function mostrarErroNasLinhas(mensagem) {
     document.getElementById(`sessao${i}`).textContent = "Erro";
   }
   showError(mensagem);
-}
+}*/

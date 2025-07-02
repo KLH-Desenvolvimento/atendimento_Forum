@@ -1,39 +1,18 @@
-import { fetchAPI, showError } from './config.js';
+import { chamadaService } from './service.js';
 
-// Variável para armazenar as chamadas
-let chamadasAtuais = [];
-
-async function verificarAtualizacoes() {
-  if (sessionStorage.getItem('atualizarChamadas') != null) {
-    sessionStorage.removeItem('atualizarChamadas');
-    try {
-      const hora = sessionStorage.getItem("horaChamada");
-      await pegarChamada(hora);
-    } catch (error) {
-      console.error("Erro ao atualizar chamadas:", error);
-      mostrarErroNasLinhas(error.message);
+export async function configurarTela08() {
+  // Escuta quando a Tela07 envia a hora (via botão "Chamar")
+  chamadaService.channel.addEventListener('message', async (event) => {
+    if (event.data.type === 'ATUALIZAR_HORA') {
+      const dados = await chamadaService.carregarChamadas(event.data.hora);
+      preencherTabela(dados); // Exibe na Tela08
     }
-  }
-}
+  });
 
-export async function pegarChamada(hora) {
-  try {
-    console.log("chamada iniciada");
-    const horaChamada = hora || sessionStorage.getItem("horaChamada");
-    console.log(horaChamada);
-    const response = await fetchAPI('chamada', 'POST', { horaSessao: horaChamada });
-    
-    if (!response) {
-      throw new Error('Dados inválidos recebidos da API');
-    }
-    
-    chamadasAtuais = response;
-    preencherTabela(chamadasAtuais);
-    return chamadasAtuais;
-    
-  } catch (error) {
-    console.error("Erro ao carregar chamadas:", error);
-    throw error;
+  // Carrega dados se já houver hora definida (ex: ao recarregar a página)
+  if (chamadaService.horaChamada) {
+    const dados = await chamadaService.carregarChamadas();
+    preencherTabela(dados);
   }
 }
 
@@ -66,3 +45,16 @@ function mostrarErroNasLinhas(mensagem) {
   }
   showError(mensagem);
 }
+
+window.addEventListener('load', () => {
+  // Re-inscreve nos observáveis quando a página é carregada
+  chamadaService.chamadas$.subscribe(chamadas => {
+    console.log("Atualização recebida na Tela08:", chamadas);
+    preencherTabela(chamadas);
+  });
+  
+  // Se já houver hora definida, carrega os dados
+  if (chamadaService.horaSubject.getValue()) {
+    chamadaService.carregarChamadas();
+  }
+});

@@ -5,7 +5,6 @@ import { configurarTela05 } from './tela05.js';
 import { configurarTela06 } from './tela06.js';
 import { configurarTela07 } from './tela07.js';
 import { configurarTela08 } from './tela08.js';
-import { configurarChamada } from './chamada.js'
 
 // Inicialização da aplicação
 window.addEventListener("DOMContentLoaded", async () => {
@@ -18,7 +17,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (path.includes("Tela-06")) configurarTela06();
     if (path.includes("Tela-07")) configurarTela07();
     if (path.includes("Tela-08")) configurarTela08();
-    if (path.includes('telaChamada')) configurarChamada();
   } catch (e) {
     console.error("Erro na inicialização:", e);
     showError("Erro ao carregar a aplicação. Recarregue a página.");

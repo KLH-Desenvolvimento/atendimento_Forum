@@ -1,25 +1,30 @@
-import {Subject} from `rxjs`;
-import { fetchAPI } from "./config";
+import { fetchAPI } from './config.js';
 
+class ChamadaService {
+  constructor() {
+    this.channel = new BroadcastChannel('chamada_channel');
+    this.horaChamada = sessionStorage.getItem("horaChamada") || "";
+  }
 
-class callService{
-    constructor(){
-        this.callRec = [];
-        this.call = new Subject();
-    }
+  // Define a hora e notifica a Tela08 (quando necessário)
+  setHora(hora) {
+    this.horaChamada = hora;
+    sessionStorage.setItem("horaChamada", hora);
+  }
 
-    async getCal(hora) {
-        if(hora != null){
-            try {
-                const horaSessao = hora;
-                const response = await fetchAPI(`chamada`, `POST`, {horaSessao: horaSessao})
+  // Busca dados da API (usado pela Tela07 e Tela08)
+  async carregarChamadas(hora = this.horaChamada) {
+    if (!hora) throw new Error('Nenhum horário selecionado');
+    return await fetchAPI('chamada', 'POST', { horaSessao: hora });
+  }
 
-                this.callRec = response;
-                this.call.next(this.callRec);
-                
-            } catch (e) {
-                console.log("horario invalido", e);                
-            }
-        }
-    }
+  // Envia a hora para a Tela08 (disparado pelo botão "Chamar")
+  notificarTela08() {
+    this.channel.postMessage({
+      type: 'ATUALIZAR_HORA',
+      hora: this.horaChamada
+    });
+  }
 }
+
+export const chamadaService = new ChamadaService();
