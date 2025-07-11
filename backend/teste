@@ -1,0 +1,1 @@
+curl -X POST "http://localhost:3001/api/chamada" -H "Content-Type: application/json" -d "{\"horaSessao\":\"14:00\"}"
