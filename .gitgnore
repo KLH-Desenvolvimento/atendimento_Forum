@@ -22,3 +22,4 @@ yarn-error.log*
 
 # Sistema
 registros.db
+sqljs-all
