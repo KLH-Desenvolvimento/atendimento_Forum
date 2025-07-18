@@ -10,7 +10,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type']
 }));
-app.use(express.static('/home/atendimento_Forum'));
+app.use(express.static('atendimento_Forum'));
 
 
 app.post('/api/registros', async (req, res) => {

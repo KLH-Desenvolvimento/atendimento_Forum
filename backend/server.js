@@ -11,6 +11,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 
+app.use(express.static('atendimento_Forum/'));
 
 app.post('/api/registros', async (req, res) => {
   try {

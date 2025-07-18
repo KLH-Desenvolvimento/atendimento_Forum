@@ -1,5 +1,5 @@
 /*configurações globais */
-export const API_BASE_URL = '10.61.240.7:3001/api';
+export const API_BASE_URL = 'http://localhost:3001/api';
 
 /*funções para data e hora */
 export function dataAtual() {

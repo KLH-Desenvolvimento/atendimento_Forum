@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../../css/drop.css">
+  <link rel="stylesheet" href="../../css/index.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="../../IMG/teste 01.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <title>Quinta-tela</title>
+</head>
+<body>
+  <main>
+    <div class="forum">
+      <a href="./Tela-04.html"><i class="bi bi-arrow-left-square-fill"></i> VOLTAR PARA PÁGINA ANTERIOR</a>
+      <img class="IMG_padrao" src="../../IMG/teste 01.png" alt="imagem-Fórum-Tucurui-PA">
+      <h2>PODER JUDICIÁRIO <span class="span"> FÓRUM </span> </h2>
+    </div>
+
+    <div class="main_padrao">
+      <h1 class="h1_padao">Selecione o Horario <span class="padao">da Audiência</span></h1>
+
+      <!-- Horários com data attributes -->
+      <div class="linha_horario" data-horario="09:00">
+        <span id="linha-padrão-1" class="linha">SESSÃO 1 - 09:00</span>
+        <button class="btn_horario">Selecionar</button>
+      </div>
+      <div class="linha_horario" data-horario="10:00">
+        <span id="linha-padrão-2" class="linha">SESSÃO 2 - 10:00</span>
+        <button class="btn_horario">Selecionar</button>
+      </div>
+      <div class="linha_horario" data-horario="11:00">
+        <span id="linha-padrão-3" class="linha">SESSÃO 3 - 11:00</span>
+        <button class="btn_horario">Selecionar</button>
+      </div>
+      <div class="linha_horario" data-horario="12:00">
+        <span id="linha-padrão-4" class="linha">SESSÃO 4 - 12:00</span>
+        <button class="btn_horario">Selecionar</button>
+      </div>
+      <div class="linha_horario" data-horario="13:00">
+        <span id="linha-padrão-5" class="linha">SESSÃO 5 - 13:00</span>
+        <button class="btn_horario">Selecionar</button>
+      </div>
+    </div>
+
+    <div class="Drop-ddow" id="Drop-ddow">
+      <div class="convocacao">
+        <h1 class="header">Intimação</h1>
+        <div class="ajuste">
+          <!-- Checkboxes com data attributes -->
+          <div class="drop">
+            <span class="drop-txt" data-intimacao="REQUERENTE">REQUERENTE</span>
+            <input class="caixa" type="checkbox">
+          </div>
+          <div class="drop">
+            <span class="drop-txt" data-intimacao="REQUERIDO">REQUERIDO</span>
+            <input class="caixa" type="checkbox">
+          </div>
+          <div class="drop">
+            <span class="drop-txt" data-intimacao="TESTEMUNHA">TESTEMUNHA</span>
+            <input class="caixa" type="checkbox">
+          </div>
+
+          <button id="btn-confirmar" class="btn_Drop">CONFIRMAR</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts no final do body -->
+  <script src="../../scripts/config.js" type="module"></script>
+  <script src="../scripts/03-seletorHorario.js" type="module"></script>
+  <script src="../../scripts/main.js" type="module"></script>
+</body>
+</html>
