@@ -10,7 +10,7 @@ npm install cors
 npm install postgres
 
 ## Server
-node beckend/server.js
+node beckend/server.js ```
 
 
 ### **2. Padrões de projeto**
